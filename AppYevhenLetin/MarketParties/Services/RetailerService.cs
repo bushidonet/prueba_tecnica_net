@@ -10,7 +10,7 @@ public class RetailerService(AppDbContext data) : IRetailer
 
     public async Task<IEnumerable<Retailer>> GetAllRetailersAsync()
     {
-        return await data.Retailers.ToListAsync(); // Usar 'db' para acceder a los datos
+        return await data.Retailers.ToListAsync();
     }
 
   
