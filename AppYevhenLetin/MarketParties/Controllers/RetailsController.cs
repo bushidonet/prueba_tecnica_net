@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using PruebaYevhenLetin.Entity;
+using PruebaYevhenLetin.Services;
 
 namespace PruebaYevhenLetin.Controllers;
 
@@ -6,16 +8,48 @@ namespace PruebaYevhenLetin.Controllers;
 [Route("[controller]")]
 public class RetailsController : ControllerBase
 {
-    private readonly ILogger<RetailsController> _logger;
+    private readonly IRetailer _retailer;
 
-    public RetailsController()
+    public RetailsController(IRetailer retailerService)
     {
-
+        _retailer = retailerService;
     }
 
-    [HttpGet(Name = "Get")]
-    public IEnumerable<Retailer> Get()
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Retailer>>> GetAll()
     {
-        return;
+        try
+        {
+            var registros = await _retailer.GetAllRetailersAsync();
+            return Ok(registros);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    
+    [HttpGet("{primaryKey}")]
+    public async Task<ActionResult<Retailer>> GetByReCode(int primaryKey)
+    {
+        try
+        {
+            var registro = await _retailer.GetRetailerByCodeAsync(primaryKey);
+
+            if (registro is null)
+            {
+                return NotFound(new { Message = $"No se encontro primary key {primaryKey}" });
+            }
+
+            return Ok(registro);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
 }
